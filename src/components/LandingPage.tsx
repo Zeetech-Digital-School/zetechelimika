@@ -149,9 +149,9 @@ const LandingPage = ({ onLogin, isLoading, error }: LandingPageProps) => {
             <p className="text-xs text-muted-foreground leading-relaxed">
               Contact ICT Support at{" "}
               <a href="mailto:ict@zetech.ac.ke" className="text-primary hover:underline">
-                ict@zetech.ac.ke
+                zdscontent@zetech.ac.ke
               </a>{" "}
-              or visit the ICT Help Desk.
+              or visit the Elearning Help Desk.
             </p>
           </motion.div>
 
@@ -162,7 +162,7 @@ const LandingPage = ({ onLogin, isLoading, error }: LandingPageProps) => {
             transition={{ delay: 0.5 }}
             className="mt-6 text-center text-xs text-muted-foreground"
           >
-            © 2025 Zetech University. All rights reserved.
+            © {new Date().getFullYear()} Zetech University. All rights reserved.
           </motion.p>
         </div>
       </div>
