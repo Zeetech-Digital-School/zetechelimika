@@ -241,11 +241,11 @@ const Dashboard = ({ user, onLogout }: DashboardProps) => {
           </h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             <div className="text-center p-4 rounded-xl bg-muted/50">
-              <p className="text-2xl font-bold text-primary">2025</p>
+              <p className="text-2xl font-bold text-primary">© {new Date().getFullYear()}</p>
               <p className="text-xs text-muted-foreground mt-1">Academic Year</p>
             </div>
             <div className="text-center p-4 rounded-xl bg-muted/50">
-              <p className="text-2xl font-bold text-accent">Jan</p>
+              <p className="text-2xl font-bold text-accent">{new Date().toLocaleString("en-US", { month: "short" })}</p>
               <p className="text-xs text-muted-foreground mt-1">Current Semester</p>
             </div>
             <div className="text-center p-4 rounded-xl bg-muted/50">
