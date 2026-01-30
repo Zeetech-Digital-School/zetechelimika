@@ -148,7 +148,7 @@ const LandingPage = ({ onLogin, isLoading, error }: LandingPageProps) => {
             <h4 className="font-semibold text-sm text-foreground mb-2">Need Help?</h4>
             <p className="text-xs text-muted-foreground leading-relaxed">
               Contact ICT Support at{" "}
-              <a href="mailto:ict@zetech.ac.ke" className="text-primary hover:underline">
+              <a href="mailto:zdscontent@zetech.ac.ke" className="text-primary hover:underline">
                 zdscontent@zetech.ac.ke
               </a>{" "}
               or visit the Elearning Help Desk.
