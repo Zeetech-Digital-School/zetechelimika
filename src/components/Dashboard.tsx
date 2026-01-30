@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   GraduationCap,
@@ -10,9 +12,15 @@ import {
   LogOut,
   User,
   ChevronRight,
+  Download,
+  Smartphone,
 } from "lucide-react";
 import ModuleCard from "@/components/ui/ModuleCard";
+import NotificationPanel from "@/components/NotificationPanel";
+import OfflineBanner from "@/components/OfflineBanner";
 import { Button } from "@/components/ui/button";
+import { usePWA } from "@/hooks/usePWA";
+import { useNotifications } from "@/hooks/useNotifications";
 
 interface DashboardProps {
   user: {
@@ -73,14 +81,16 @@ const modules = [
   },
 ];
 
-const notifications = [
-  { id: 1, text: "Fee payment deadline: Feb 15, 2025", type: "warning" },
-  { id: 2, text: "New semester registration now open", type: "info" },
-];
-
 const Dashboard = ({ user, onLogout }: DashboardProps) => {
+  const navigate = useNavigate();
+  const [notificationPanelOpen, setNotificationPanelOpen] = useState(false);
+  const { isInstalled, isInstallable } = usePWA();
+  const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
+
   return (
     <div className="min-h-screen bg-background bg-pattern">
+      <OfflineBanner />
+      
       {/* Header */}
       <motion.header
         initial={{ opacity: 0, y: -20 }}
@@ -103,17 +113,32 @@ const Dashboard = ({ user, onLogout }: DashboardProps) => {
             </div>
 
             {/* User Actions */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
+              {/* Install Button (mobile only, if not installed) */}
+              {!isInstalled && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => navigate("/install")}
+                  className="rounded-xl hover:bg-primary/10 text-primary"
+                >
+                  <Download className="w-5 h-5" />
+                </Button>
+              )}
+
               {/* Notifications */}
               <Button
                 variant="ghost"
                 size="icon"
+                onClick={() => setNotificationPanelOpen(true)}
                 className="relative rounded-xl hover:bg-muted"
               >
                 <Bell className="w-5 h-5 text-muted-foreground" />
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-secondary text-secondary-foreground text-xs font-bold rounded-full flex items-center justify-center">
-                  {notifications.length}
-                </span>
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-secondary text-secondary-foreground text-xs font-bold rounded-full flex items-center justify-center">
+                    {unreadCount}
+                  </span>
+                )}
               </Button>
 
               {/* User Menu */}
@@ -140,8 +165,40 @@ const Dashboard = ({ user, onLogout }: DashboardProps) => {
         </div>
       </motion.header>
 
+      {/* Notification Panel */}
+      <NotificationPanel
+        notifications={notifications}
+        isOpen={notificationPanelOpen}
+        onClose={() => setNotificationPanelOpen(false)}
+        onMarkAsRead={markAsRead}
+        onMarkAllAsRead={markAllAsRead}
+      />
+
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
+        {/* Install Prompt (if not installed) */}
+        {!isInstalled && (isInstallable || true) && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-6 p-4 rounded-2xl bg-primary/5 border border-primary/20 cursor-pointer hover:bg-primary/10 transition-colors"
+            onClick={() => navigate("/install")}
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
+                <Smartphone className="w-6 h-6 text-primary" />
+              </div>
+              <div className="flex-1">
+                <h3 className="font-semibold text-foreground">Install Elimika App</h3>
+                <p className="text-sm text-muted-foreground">
+                  Add to your home screen for quick access & offline use
+                </p>
+              </div>
+              <ChevronRight className="w-5 h-5 text-muted-foreground" />
+            </div>
+          </motion.div>
+        )}
+
         {/* Welcome Section */}
         <motion.section
           initial={{ opacity: 0, y: 20 }}
@@ -156,33 +213,6 @@ const Dashboard = ({ user, onLogout }: DashboardProps) => {
             Welcome back! Select a service to get started.
           </p>
         </motion.section>
-
-        {/* Notifications Banner */}
-        {notifications.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.15 }}
-            className="mb-8 p-4 rounded-2xl bg-secondary/10 border border-secondary/30"
-          >
-            <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-xl bg-secondary/20 flex items-center justify-center flex-shrink-0">
-                <Bell className="w-5 h-5 text-secondary" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="font-semibold text-foreground mb-1">Notifications</h3>
-                <ul className="space-y-1">
-                  {notifications.map((notif) => (
-                    <li key={notif.id} className="text-sm text-muted-foreground flex items-center gap-2">
-                      <ChevronRight className="w-3 h-3 text-secondary flex-shrink-0" />
-                      {notif.text}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </motion.div>
-        )}
 
         {/* Modules Grid */}
         <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
@@ -223,8 +253,8 @@ const Dashboard = ({ user, onLogout }: DashboardProps) => {
               <p className="text-xs text-muted-foreground mt-1">Status</p>
             </div>
             <div className="text-center p-4 rounded-xl bg-muted/50">
-              <p className="text-2xl font-bold text-module-graduation">0</p>
-              <p className="text-xs text-muted-foreground mt-1">Pending Tasks</p>
+              <p className="text-2xl font-bold text-module-graduation">{unreadCount}</p>
+              <p className="text-xs text-muted-foreground mt-1">Notifications</p>
             </div>
           </div>
         </motion.section>
