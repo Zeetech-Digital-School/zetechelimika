@@ -254,7 +254,7 @@ const Dashboard = ({ user, onLogout }: DashboardProps) => {
             </div>
             {/* <div className="text-center p-4 rounded-xl bg-muted/50">
               <p className="text-2xl font-bold text-module-graduation">{unreadCount}</p>
-              {/* <p className="text-xs text-muted-foreground mt-1">Notifications</p> */}
+              <p className="text-xs text-muted-foreground mt-1">Notifications</p>
             </div> */}
           </div>
         </motion.section>
