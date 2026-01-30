@@ -254,7 +254,7 @@ const Dashboard = ({ user, onLogout }: DashboardProps) => {
             </div>
             <div className="text-center p-4 rounded-xl bg-muted/50">
               <p className="text-2xl font-bold text-module-graduation">{unreadCount}</p>
-              <p className="text-xs text-muted-foreground mt-1">Notifications</p>
+              {/* <p className="text-xs text-muted-foreground mt-1">Notifications</p> */}
             </div>
           </div>
         </motion.section>
@@ -264,7 +264,7 @@ const Dashboard = ({ user, onLogout }: DashboardProps) => {
       <footer className="mt-auto py-6 border-t border-border/50">
         <div className="container mx-auto px-4 text-center">
           <p className="text-sm text-muted-foreground">
-            © 2025 Zetech University. Zetech Elimika — One Gateway. One Login. One Zetech.
+            © {new Date().getFullYear()} Zetech University. All rights reserved.
           </p>
         </div>
       </footer>
